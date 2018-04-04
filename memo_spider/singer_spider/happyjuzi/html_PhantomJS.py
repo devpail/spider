@@ -3,16 +3,21 @@
 from urllib import request
 from selenium import webdriver
 from bs4 import BeautifulSoup
+from selenium.webdriver.chrome.options import Options
 import logging
 logger = logging.getLogger()
 
 class HtmlDownload(object):
     def download(self, root_url):
+        logger.info("抓取url:"+root_url)
         if root_url is None:
             return None
         try:
-            driver = webdriver.PhantomJS()
-            driver.set_page_load_timeout(30)
+            # driver = webdriver.PhantomJS()
+            chrome_options = Options()
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--disable-gpu')
+            driver = webdriver.Chrome(chrome_options=chrome_options)
             driver.get(root_url)
             soup = BeautifulSoup(driver.page_source, 'html.parser')
             return soup

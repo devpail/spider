@@ -75,8 +75,8 @@ class DbHelper(object):
         connection = pymysql.connect(**self.config)
         try:
             with connection.cursor() as cursor:
-                sql = "select `id`,`href`,`time`, `status` from `juzi_pageurl` where status = %s limit 10"
-                cursor.execute(sql, const.SELECT_PAGE_STATUS)
+                sql = "select `id`,`href`,`time`, `status` from `juzi_pageurl` where status != %s limit 10"
+                cursor.execute(sql, const.CRAWL_PAGEURL_SUCCESS)
                 if cursor.rowcount == 0:
                     return None
                 else:

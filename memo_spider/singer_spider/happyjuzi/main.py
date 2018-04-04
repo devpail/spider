@@ -1,13 +1,16 @@
 # -*- coding:utf-8 -*-
 
-
+import sys
+sys.path.append('~/Documents/CodeSpace/spider/memo_spider')
+sys.path.append('~/Documents/CodeSpace/spider/memo_spider/singer_spider')
+sys.path.append('~/Documents/CodeSpace/spider/memo_spider/singer_spider/happyjuzi')
 import time
 import logging
 import logging.config
 from singer_spider.happyjuzi import html_PhantomJS
 from singer_spider.happyjuzi import db_helper
 from singer_spider.happyjuzi import html_parser
-from singer_spider.happyjuzi.juzi_const import juzi_const
+from singer_spider.happyjuzi.juzi_const import const
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger()
@@ -31,15 +34,15 @@ class SpiderMain(object):
 
     # 抓取明星
     def crawlMain(self, root_url):
-        # 1.抓取第一个url页面的信息
-        # self.crawlPageURL(root_url)
-        # # 2.遍历抓取数据库中未成功抓取的url页面
-        # pageUrls = self.dbHelper.select10PageURL()
-        # while pageUrls != None:
-        #     self.crawlPageURLs(pageUrls)
-        #     pageUrls = self.dbHelper.select10PageURL()
-        # else:
-        #     logger.info("url已全部抓取完毕~")
+        #1.抓取第一个url页面的信息
+        self.crawlPageURL(root_url)
+        # 2.遍历抓取数据库中未成功抓取的url页面
+        pageUrls = self.dbHelper.select10PageURL()
+        while pageUrls != None:
+            self.crawlPageURLs(pageUrls)
+            pageUrls = self.dbHelper.select10PageURL()
+        else:
+            logger.info("url已全部抓取完毕~")
         # 3.抓取明星信息
         starUrls = self.dbHelper.select10StarURL()
         while starUrls != None:
@@ -51,11 +54,11 @@ class SpiderMain(object):
     def crawlStarURLs(self, starUrls):
         for starUrl in starUrls:
             self.starUrlNum += 1
-            logger.info("开始抓取第" + str(self.starUrlNum) + "个starURL - " + pageUrl[1])
+            logger.info("开始抓取第" + str(self.starUrlNum) + "个starURL - " + starUrl[1])
             # url抓取，返回-2,-1,1
-            crawlResult = self.crawlStarInfo(pageUrl[1])
+            crawlResult = self.crawlStarInfo(starUrl[1])
             # 更新url抓取状态
-            self.dbHelper.updateStarUrlStatus(pageUrl[0], crawlResult)
+            self.dbHelper.updateStarUrlStatus(starUrl[0], crawlResult)
             endTime = time.time()
             totalTime = endTime - self.startTime
             logger.info("抓取url链接已用时间：" + str(totalTime) + "秒")
@@ -72,7 +75,7 @@ class SpiderMain(object):
     # 循环遍历、处理页面url集合
     def crawlPageURLs(self, pageUrls):
         for pageUrl in pageUrls:
-            self.urlNum += 1
+            self.pageUrlNum += 1
             logger.info("开始抓取第" + str(self.pageUrlNum) + "个pageURL - " + pageUrl[1])
             #url抓取，返回-2,-1,1
             crawlResult = self.crawlPageURL(pageUrl[1])
@@ -87,6 +90,7 @@ class SpiderMain(object):
     #-1：抓取失败；0：
     def crawlPageURL(self, url):
         # 下载url页面html
+        logger.info("开始抓取页面信息")
         soup = self.downloader.download(url)
         if soup == None:
             return const.CRAWL_HTML_FAILED
