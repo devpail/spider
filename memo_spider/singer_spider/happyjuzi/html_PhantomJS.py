@@ -47,7 +47,7 @@ class HtmlDownload(object):
         try:
             response = request.urlopen(req)
             html = response.read()
-            logger.info('Status:', response.status, response.reason)
+            logger.info('Status:'+response.status+response.reason)
             if response.status != 200:
                 return None
         except Exception as err:

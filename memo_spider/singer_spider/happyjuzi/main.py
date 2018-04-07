@@ -1,16 +1,12 @@
 # -*- coding:utf-8 -*-
 
-import sys
-sys.path.append('~/Documents/CodeSpace/spider/memo_spider')
-sys.path.append('~/Documents/CodeSpace/spider/memo_spider/singer_spider')
-sys.path.append('~/Documents/CodeSpace/spider/memo_spider/singer_spider/happyjuzi')
 import time
 import logging
 import logging.config
-from singer_spider.happyjuzi import html_PhantomJS
-from singer_spider.happyjuzi import db_helper
-from singer_spider.happyjuzi import html_parser
-from singer_spider.happyjuzi.juzi_const import const
+import html_PhantomJS
+import db_helper
+import html_parser
+import const
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger()

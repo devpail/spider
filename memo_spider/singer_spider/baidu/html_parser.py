@@ -4,14 +4,14 @@ import re
 import uuid
 import time
 from bs4 import BeautifulSoup
+import logging
+import logging.config
 
-
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger()
 class HtmlParser(object):
-    def parseSinger(self, htmlCode):
+    def parseSinger(self, soup):
         reDatas = []
-        if htmlCode is None:
-            return None
-        soup = BeautifulSoup(htmlCode, 'html.parser')
         ul_tag = soup.find("ul", class_="container")
         a_tags = ul_tag.find_all("a", href=re.compile(r"/artist/"))
         # print(a_tags)
@@ -31,11 +31,8 @@ class HtmlParser(object):
         # TODO
         return None
 
-    def parseBaike(self, html_doc):
+    def parseBaike(self, soup):
         reDatas = []
-        if html_doc is None:
-            return None
-        soup = BeautifulSoup(html_doc.decode(encoding='UTF-8'), 'html.parser')
         div_baseinfo = soup.find("div", class_="basic-info")
         if div_baseinfo is None:
             return None

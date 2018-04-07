@@ -1,9 +1,8 @@
 # -*- coding:utf-8 -*-
-import uuid
-import time
 
 import pymysql as pymysql
-from singer_spider.happyjuzi.juzi_const import const
+import const
+
 import logging
 logger = logging.getLogger()
 
